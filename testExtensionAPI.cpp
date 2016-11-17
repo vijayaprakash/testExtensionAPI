@@ -61,6 +61,7 @@ public:
 	bool				isUndoable( ) const; 
 	MStatus				undoIt( ); 
 	MStatus				redoIt( ); 
+	void addExtensionToPlugin(MObject &object) { pluginObject = object;}
     MStatus				parseArgs( const MArgList &args ); 
 	static MSyntax		        newSyntax( );  	
 
@@ -78,7 +79,7 @@ private:
 	MDGModifier	        fCmd; 
 	OperationList		fOperation; 
 	MNodeClass*	        fNodeType;
-	MObject 		object;
+	MObject 		pluginObject;
 }; 
 
 // Standard API entry and exit points. 
@@ -209,6 +210,8 @@ MStatus testExtensionAPI::doIt( const MArgList& args )
 				compAttr.addChild( extensionChild2 );
 				status = fCmd.addExtensionAttribute( *fNodeType, extensionParent );
 				CHECK_MSTATUS(status);
+				status = fCmd.linkExtensionAttributeToPlugin(pluginObject, extensionParent);
+				CHECK_MSTATUS(status);
 			}
 			break;
 
@@ -218,6 +221,8 @@ MStatus testExtensionAPI::doIt( const MArgList& args )
 				MObject parentAttr = fNodeType->attribute( kParentNameLong, &status );
 				CHECK_MSTATUS(status);
 				status = fCmd.removeExtensionAttribute( *fNodeType, parentAttr );
+				CHECK_MSTATUS(status);
+				status = fCmd.unlinkExtensionAttributeFromPlugin(pluginObject, parentAttr);
 				CHECK_MSTATUS(status);
 			}
 			break;
@@ -293,6 +298,8 @@ MStatus initializePlugin( MObject obj )
 	status = plugin.registerCommand( MEL_COMMAND_NAME, 
 									 testExtensionAPI::creator, 
 									 testExtensionAPI::newSyntax ); 
+
+	testExtensionAPI::addExtensionToPlugin(obj);
 
 	return status; 
 }
