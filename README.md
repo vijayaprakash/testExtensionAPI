@@ -9,8 +9,3 @@
 6. testExtensionAPI -le sine; // List Extensions
 7. testExtensionAPI -re sine; // Remove Extensions
 8. testExtensionAPI -le sine; // List Extensions
-
-## Written by
-
-Vijaya Prakash (Autodesk Developer Network)<br />
-http://www.autodesk.com/adn<br />
